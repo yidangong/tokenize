@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@rolldown/binding-darwin-arm64": "^1.0.1",
     "@types/culori": "^4.0.1",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",

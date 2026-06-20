@@ -588,9 +588,14 @@ export function PreviewPanel() {
         ' h-full min-h-0 min-w-0 flex-col'
       }
     >
-      <div className="flex items-center justify-between gap-2 border-b border-[var(--color-border)] px-3 py-2">
-        <div className="text-xs uppercase tracking-wider text-[var(--color-text-muted)]">Preview</div>
-        <div className="font-mono text-[10px] text-[var(--color-text-muted)]">live render</div>
+      <div className="flex flex-col gap-1 border-b border-[var(--color-border)] px-3 py-2">
+        <div className="flex min-h-[28px] items-center justify-between gap-2">
+          <div className="text-xs uppercase tracking-wider text-[var(--color-text-muted)]">Preview</div>
+          <div className="font-mono text-[10px] text-[var(--color-text-muted)]">live render</div>
+        </div>
+        <div className="flex min-h-[18px] items-center">
+          <span className="truncate text-xs text-[var(--color-text-muted)]">click any token to edit it live</span>
+        </div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto bg-[var(--color-surface)] p-4 scrollbar-thin">

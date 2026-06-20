@@ -54,12 +54,43 @@ export function InputPanel() {
         ' h-full min-h-0 min-w-0 flex-col border-r border-[var(--color-border)]'
       }
     >
-      <div className="flex flex-col gap-1.5 border-b border-[var(--color-border)] px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-baseline gap-2">
-          <div className="text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
-            Input
+      <div className="flex flex-col gap-1 border-b border-[var(--color-border)] px-3 py-2">
+        <div className="flex min-h-[28px] items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-thin">
+            <div className="shrink-0 text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
+              Input
+            </div>
+            <div className="flex shrink-0 gap-0.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
+              {PARSEABLE_FORMATS.map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setInputFormat(f)}
+                  className={
+                    'rounded px-2 py-1 text-xs transition whitespace-nowrap ' +
+                    (inputFormat === f
+                      ? 'bg-[var(--color-canvas)] text-[var(--color-text)] shadow-sm'
+                      : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]')
+                  }
+                >
+                  {FORMATS[f].label}
+                </button>
+              ))}
+            </div>
           </div>
-          <AnimatePresence>
+          <div className="flex shrink-0 items-center gap-1">
+            <button
+              type="button"
+              onClick={resetToDefault}
+              title="Reset to a starter example"
+              className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-xs text-[var(--color-text)] transition hover:border-[var(--color-text-muted)] whitespace-nowrap"
+            >
+              ↻ Example
+            </button>
+          </div>
+        </div>
+        <div className="flex min-h-[18px] items-center">
+          <AnimatePresence mode="wait" initial={false}>
             {lineBadge ? (
               <motion.span
                 key="badge"
@@ -77,39 +108,12 @@ export function InputPanel() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="hidden text-xs text-[var(--color-text-muted)] md:block"
+                className="truncate text-xs text-[var(--color-text-muted)]"
               >
                 edit the example or paste your own
               </motion.span>
             )}
           </AnimatePresence>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={resetToDefault}
-            title="Reset to a starter example"
-            className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-xs text-[var(--color-text)] transition hover:border-[var(--color-text-muted)] whitespace-nowrap"
-          >
-            ↻ Example
-          </button>
-          <div className="flex gap-0.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
-            {PARSEABLE_FORMATS.map((f) => (
-              <button
-                key={f}
-                type="button"
-                onClick={() => setInputFormat(f)}
-                className={
-                  'rounded px-2 py-1 text-xs transition whitespace-nowrap ' +
-                  (inputFormat === f
-                    ? 'bg-[var(--color-canvas)] text-[var(--color-text)] shadow-sm'
-                    : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]')
-                }
-              >
-                {FORMATS[f].label}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 

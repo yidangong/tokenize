@@ -83,96 +83,110 @@ export function OutputPanel() {
         ' h-full min-h-0 min-w-0 flex-col border-r border-[var(--color-border)]'
       }
     >
-      <div className="flex items-center justify-between gap-2 border-b border-[var(--color-border)] px-3 py-2">
-        <div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-thin">
-          <div className="shrink-0 text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
-            Output
+      <div className="flex flex-col gap-1 border-b border-[var(--color-border)] px-3 py-2">
+        <div className="flex min-h-[28px] items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-thin">
+            <div className="shrink-0 text-xs uppercase tracking-wider text-[var(--color-text-muted)]">
+              Output
+            </div>
+            <div className="flex shrink-0 gap-0.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
+              {OUTPUT_FORMATS.map((f) => {
+                const active = activeOutput === f;
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setActiveOutput(f)}
+                    className={
+                      'relative rounded px-2 py-1 text-xs whitespace-nowrap transition ' +
+                      (active
+                        ? 'text-[var(--color-text)]'
+                        : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]')
+                    }
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="output-tab-indicator"
+                        className="absolute inset-0 rounded bg-[var(--color-canvas)] shadow-sm"
+                        transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                      />
+                    )}
+                    <span className="relative z-10">{FORMATS[f].label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <AnimatePresence>
-            {lineBadge && (
+          <div className="flex shrink-0 items-center gap-1">
+            <motion.button
+              type="button"
+              onClick={() => useTokens.getState().downloadOutput()}
+              whileTap={{ scale: 0.94 }}
+              aria-label="Download output as file"
+              title="Download as file"
+              className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-xs transition hover:border-[var(--color-text-muted)]"
+            >
+              ↓
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={onCopy}
+              whileTap={{ scale: 0.94 }}
+              className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-1 text-xs transition hover:border-[var(--color-text-muted)]"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {copied ? (
+                  <motion.span
+                    key="copied"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-block text-[var(--color-accent)]"
+                  >
+                    ✓ Copied
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="copy"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-block"
+                  >
+                    Copy
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div>
+        </div>
+        <div className="flex min-h-[18px] items-center">
+          <AnimatePresence mode="wait" initial={false}>
+            {lineBadge ? (
               <motion.span
-                key={lineBadge}
+                key="badge"
                 initial={{ opacity: 0, scale: 0.9, x: -4 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="shrink-0 rounded-full bg-[var(--color-accent-soft)] px-1.5 py-[1px] font-mono text-[10px] text-[var(--color-accent)]"
+                className="rounded-full bg-[var(--color-accent-soft)] px-1.5 py-[1px] font-mono text-[10px] text-[var(--color-accent)]"
               >
                 {lineBadge}
               </motion.span>
+            ) : (
+              <motion.span
+                key="subtitle"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="truncate text-xs text-[var(--color-text-muted)]"
+              >
+                read-only · updates as you type
+              </motion.span>
             )}
           </AnimatePresence>
-          <div className="flex gap-0.5 rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
-            {OUTPUT_FORMATS.map((f) => {
-              const active = activeOutput === f;
-              return (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setActiveOutput(f)}
-                  className={
-                    'relative rounded px-2 py-1 text-xs whitespace-nowrap transition ' +
-                    (active
-                      ? 'text-[var(--color-text)]'
-                      : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]')
-                  }
-                >
-                  {active && (
-                    <motion.span
-                      layoutId="output-tab-indicator"
-                      className="absolute inset-0 rounded bg-[var(--color-canvas)] shadow-sm"
-                      transition={{ type: 'spring', stiffness: 500, damping: 38 }}
-                    />
-                  )}
-                  <span className="relative z-10">{FORMATS[f].label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex shrink-0 items-center gap-1">
-          <motion.button
-            type="button"
-            onClick={() => useTokens.getState().downloadOutput()}
-            whileTap={{ scale: 0.94 }}
-            aria-label="Download output as file"
-            title="Download as file"
-            className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-xs transition hover:border-[var(--color-text-muted)]"
-          >
-            ↓
-          </motion.button>
-          <motion.button
-            type="button"
-            onClick={onCopy}
-            whileTap={{ scale: 0.94 }}
-            className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-1 text-xs transition hover:border-[var(--color-text-muted)]"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {copied ? (
-                <motion.span
-                  key="copied"
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.15 }}
-                  className="inline-block text-[var(--color-accent)]"
-                >
-                  ✓ Copied
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="copy"
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.15 }}
-                  className="inline-block"
-                >
-                  Copy
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </motion.button>
         </div>
       </div>
 
